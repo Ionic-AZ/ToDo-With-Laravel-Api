@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::filter('allowOrigin', function($route, $request, $response) 
 {
-    $response->header('access-control-allow-origin','*');
+	// $response->headers->set('Access-Control-Allow-Origin', '*');
 });
 
  Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
@@ -44,7 +44,6 @@ Route::filter('allowOrigin', function($route, $request, $response)
 	Route::post('/projects', function(){
 		$project = new Project;
 		$project->name = Request::get('name');
-		$project->slug = Request::get('slug');
 		$project->created_at = new DateTime;
 		$project->updated_at = new DateTime; 
 		
@@ -52,7 +51,8 @@ Route::filter('allowOrigin', function($route, $request, $response)
 		
 		return Response::json([
 			'status' => 200,
-			'projects' => Project::all()
+			// 'projects' => Project::all()
+			'project' => $project
 		]);
 	});
 	
@@ -85,16 +85,14 @@ Route::filter('allowOrigin', function($route, $request, $response)
     	$task = new Task;
 		$task ->project_id = $id;
 		$task ->name = Request::get('name');
-		$task ->slug = Request::get('slug');
 		$task ->completed = Request::get('completed');
-		$task ->description = Request::get('description');		
 		$task ->created_at = new DateTime;
 		$task ->updated_at = new DateTime; 
 		
 		$task ->save();
-        $tasks = $project->tasks()->get()->toArray();
+        // $tasks = $project->tasks()->get()->toArray();
 		
-        return Response::json(['status' => 200, 'tasks' => $tasks]);
+        return Response::json(['status' => 200, 'tasks' => $task]);
     });
 
     Route::get('/project/{id}/tasks', function ($id) {
