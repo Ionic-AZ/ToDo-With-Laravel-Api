@@ -92,7 +92,7 @@ Route::filter('allowOrigin', function($route, $request, $response)
 		$task ->save();
         // $tasks = $project->tasks()->get()->toArray();
 		
-        return Response::json(['status' => 200, 'tasks' => $task]);
+        return Response::json(['status' => 200, 'task' => $task]);
     });
 
     Route::get('/project/{id}/tasks', function ($id) {

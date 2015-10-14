@@ -26,14 +26,13 @@
 		$scope.newProject = function (project) {
 			var projectTitle = project.title;
 			if (projectTitle) {
-				Projects.newProject(projectTitle).then(function (response) {
-					$scope.projects.push(response);
-					//				Projects.save($scope.projects);
-					
+				Projects.newProject(projectTitle).then(function (newProject) {
+					$scope.projects.push(newProject);
 					project.title = '';
 
-					$scope.activeProject = response;
-					Projects.setLastActiveIndex(response.id);
+					$scope.activeProject = newProject;
+					
+					Projects.setLastActiveIndex(newProject.id);
 
 				}).finally(function () {
 					$scope.closeNewProject();
@@ -47,7 +46,11 @@
 			console.log('AppController.selectProject');
 			console.log(project);
 			$scope.activeProject = project;
+			console.log('active project', $scope.activeProject);
 			Projects.setLastActiveIndex(project.id);
+			Projects.getTasks($scope.activeProject).then(function (tasks) {
+				$scope.tasks = tasks;
+			});
 			$ionicSideMenuDelegate.toggleLeft();
 		}
 	}

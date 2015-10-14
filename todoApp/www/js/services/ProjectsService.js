@@ -10,7 +10,9 @@
 			newProject: newProject,
 			getLastActiveIndex: getLastActiveIndex,
 			setLastActiveIndex: setLastActiveIndex,
-			deleteProject: deleteProject
+			deleteProject: deleteProject,
+			getTasks: getTasks,
+			newTask: newTask
 		};
 		
 		var globalProjects = [];
@@ -73,6 +75,7 @@
 			var url = baseUrl + '/projects';
 			return $http.post(url, project).then(function (response) {
 				console.log(response);
+				return response.data.project;
 			});
 			// Add a new project
 			// return {
@@ -88,7 +91,30 @@
 		
 		function setLastActiveIndex(index) {
 			console.log("Projects.setLastActiveIndex");
-			window.localStorage['lastActiveProject'] = index;
+			window.localStorage['lastActiveProject'] = index;			
+		}
+		
+		function getTasks(project) {
+			var url = baseUrl + '/project/' + project.id + '/tasks'
+			return $http.get(url).then(function (response) {
+				console.log('tasks', response);
+				return response.data.tasks;
+			})
+			
+		}
+		
+		function newTask(taskName, project) {
+			console.log("Projects.newTask");
+			var task = {
+				name: taskName,
+				completed: false
+			};
+
+			var url = baseUrl + '/project/' + project.id + '/tasks';
+			return $http.post(url, task).then(function (response) {
+				console.log(response);
+				return response.data.task;
+			});
 		}
 		
 	}

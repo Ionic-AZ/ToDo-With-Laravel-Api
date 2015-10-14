@@ -27,9 +27,13 @@
 			if (!$scope.activeProject || !task) {
 				return;
 			}
-
-			$scope.activeProject.tasks.push(task);
-			Projects.save($scope.projects);
-			$scope.taskModal.hide();
+			
+			Projects.newTask(task.title, $scope.activeProject).then(function (newTask) {
+				console.log('toDoController.newTask', newTask);
+				$scope.tasks.push(newTask);
+			})
+			.finally(function () {
+				$scope.taskModal.hide();			
+			});
 		}
 	}

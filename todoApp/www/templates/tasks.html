@@ -1,4 +1,4 @@
-<ion-view view-title="{{activeProject.title}}">
+<ion-view view-title="{{activeProject.name}}">
     <ion-nav-buttons side="right">
       <button class="button button-icon" ng-click="newTask()">
         <i class="icon ion-compose"></i>            
@@ -6,8 +6,8 @@
     </ion-nav-buttons>
     <ion-content class="padding">
 		<ion-list>
-			<ion-item ng-repeat="task in activeProject.tasks">
-				{{task.title}}
+			<ion-item ng-repeat="task in tasks">
+				{{task.name}}
 			</ion-item>
 		</ion-list>
 	</ion-content>
