@@ -102,4 +102,11 @@ Route::filter('allowOrigin', function($route, $request, $response)
              //->get()->toArray();
         return Response::json(['status' => 200, 'tasks' => $tasks]);
     });
+    
+      Route::delete('/project/{id}/', function($id){
+        $project = Project::find($id);
+        $project -> delete();
+        
+        return Response::json(['status' => 200, 'project deleted']);
+    });
  });
