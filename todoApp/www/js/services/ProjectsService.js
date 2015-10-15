@@ -2,8 +2,8 @@
 		.module('todoApp')
 		.factory('Projects', Projects);
 
-	Projects.$inject = ['$http', '$q'];
-	function Projects($http, $q) {
+	Projects.$inject = ['$http', '$q', 'ApiEndpoint'];
+	function Projects($http, $q, ApiEndpoint) {
 		var service = {
 			all: all,
 			save: save,
@@ -16,7 +16,7 @@
 		};
 		
 		var globalProjects = [];
-		var baseUrl = "http://localhost:8000/api";
+		var baseUrl = ApiEndpoint.url;
 		
 		return service;
 
