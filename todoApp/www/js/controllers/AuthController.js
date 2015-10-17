@@ -38,12 +38,12 @@ function AuthController($scope, $state, $http, $rootScope, $auth, ApiEndpoint) {
 
 	$scope.register = function () {
 
-		$http.post(baseUrl + '/register', $scope.newUser)
-			.success(function (data) {
-				$scope.email = $scope.newUser.email;
-				$scope.password = $scope.newUser.password;
-				$scope.login();
-            })
+    $http.post(baseUrl + '/register', $scope.newUser)
+      .success(function (data) {
+        $scope.email = $scope.newUser.email;
+        $scope.password = $scope.newUser.password;
+        $scope.login();
+      });
 
 	};
 };
