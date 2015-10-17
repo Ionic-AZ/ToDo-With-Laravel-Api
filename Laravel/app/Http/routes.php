@@ -110,4 +110,17 @@ Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
             return response('Unauthorized',403);
         } 
     });
+    
+      Route::delete('project/{id}/task/{taskid}', function($id){
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::where('user_id', $user->id)->where('id',$id)->first();
+        $task = $project->tasks()->where('id', $taskid)->first();
+        if ($task){
+            Task::destroy($task->id);
+            return Response::json(['status' => 200, 'Deleted']);
+        } else {
+            return Response::json('Unauthorized', 403);
+        }
+        
+    });
  });
