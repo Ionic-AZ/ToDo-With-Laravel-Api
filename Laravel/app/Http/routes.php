@@ -22,28 +22,34 @@ Route::filter('allowOrigin', function($route, $request, $response)
 	// $response->headers->set('Access-Control-Allow-Origin', '*');
 });
 
- Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
+Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
+    
+    Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
+    Route::post('authenticate', 'AuthenticateController@authenticate');
+    Route::get('authenticate/user', 'AuthenticateController@getAuthenticatedUser');
+});
+
+ Route::group(['prefix' => 'api', 'after' => 'allowOrigin', 'middleware' => 'jwt.auth'], function() {
+    
      Route::get('/projects/', function () {
-         return Response::json(['status' => 200,'projects' => Project::all()                 
-         ]);
+         $user = JWTAuth::parseToken()->authenticate();
+         $projects = Project::where('user_id', $user->id) ->get();
+
+         return Response::json(['status' => 200,'projects' => $projects ]);
      });
  
-    Route::get('/projects/{page}', function ($page) {
-        return Response::json(['status' => 200,'projects' => Project::skip(($page - 1) * 2)
-                ->take(2)
-                ->get(['id', 'name', 'created_at', 'updated_at', 'slug'])->toArray()
-        ]);
-    });
-  
-    Route::get('/project/{id}', function ($id) {
-        $project = project::find($id);
-        //out going format: {"status":200,"poll":{"id":"1","question":"What is your preferred framework for 2014 ?","options":["Laravel","PhalconPHP","CakePHP"]}}
+    Route::get('/project/{id}', function ($id) {        
+         $user = JWTAuth::parseToken()->authenticate();
+         $project = Project::where('user_id', $user->id)->where('id',$id)->first();
         return Response::json(['status' => 200, 'project' => $project ->toArray()]);
     });
 
 	Route::post('/projects', function(){
+        $user = JWTAuth::parseToken()->authenticate();
+        
 		$project = new Project;
 		$project->name = Request::get('name');
+        $project->user_id = $user->id;
 		$project->created_at = new DateTime;
 		$project->updated_at = new DateTime; 
 		
@@ -51,36 +57,26 @@ Route::filter('allowOrigin', function($route, $request, $response)
 		
 		return Response::json([
 			'status' => 200,
-			// 'projects' => Project::all()
 			'project' => $project
 		]);
 	});
 	
+    Route::delete('project/{id}', function($id){
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::where('user_id', $user->id)->where('id',$id)->first();
+        if ($project){
+            Project::destroy($project->id);
+            return Response::json(['status' => 200, 'Deleted']);
+        } else {
+            return Response::json('Unauthorized', 403);
+        }
+        
+    });
 	
-//  
-//     Route::post('/project/{id}/task', function ($projectId) {
-//         $name = Input::get('name');
-// 		$slug = Input::get('slug');
-// 		$completed = Input::get('completed');
-// 		$description = Input::get('description');
-// 		$created_at = new DateTime();
-// 		$updated_at = new DateTime();
-//         $project = Project::find($projectId);
-//         $tasks = implode(',', $project->options);
-//         $rules = [
-//             'option' => 'in:' . $options,
-//         ];
-//         $valid = Validator::make(compact('option'), $rules);
-//         if ($valid->passes()) {
-//             $poll->stats()->where('option','=',$option)->increment('vote_count');
-//             return Response::json(['status' => 200, 'mesg' => 'saved successfully!']);
-//         } else
-//             return Response::json(['status' => 400, 'mesg' => 'option not allowed!'],400);
-//  
-//     });
-//  
     Route::post('/project/{id}/tasks', function ($id) {
-        $project = Project::find($id);
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::where('user_id', $user->id)->where('id',$id)->first();
+
 		
     	$task = new Task;
 		$task ->project_id = $id;
@@ -96,10 +92,22 @@ Route::filter('allowOrigin', function($route, $request, $response)
     });
 
     Route::get('/project/{id}/tasks', function ($id) {
-        $project = Project::find($id);
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::where('user_id', $user->id)->where('id',$id)->first();
         $tasks = $project->tasks()->get()->toArray();
-             //->select(['id', 'name'])
-             //->get()->toArray();
         return Response::json(['status' => 200, 'tasks' => $tasks]);
+    });
+    
+    Route::post('/project/{id}/task/{taskid}', function($id, $taskid){
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::where('user_id', $user->id)->where('id',$id)->first();
+        $task = $project->tasks()->where('id', $taskid)->first();
+        if($task){
+            $task->completed=Request::get('completed');
+            $task->save();
+            return $task;
+        }else{
+            return response('Unauthorized',403);
+        } 
     });
  });

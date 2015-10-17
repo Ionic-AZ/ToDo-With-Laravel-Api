@@ -20,7 +20,12 @@ class AuthController extends Controller
     | a simple trait to add these behaviors. Why don't you explore it?
     |
     */
-
+  public function index()
+    {
+        // TODO: show users
+    }    
+    
+    
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     /**
@@ -42,7 +47,6 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
@@ -57,9 +61,10 @@ class AuthController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }
+    
+  
 }
