@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->delete();
  
   		$users = array(
-                [ 'email' => 'ryanchenkie@gmail.com', 'password' => Hash::make('secret')],
-                [ 'email' => 'chris@scotch.io', 'password' => Hash::make('secret')],
-                ['email' => 'holly@scotch.io', 'password' => Hash::make('secret')],
-                ['email' => 'adnan@scotch.io', 'password' => Hash::make('secret')],
+                [ 'email' => 'ryanchenkie@gmail.com', 'created_at' => new DateTime, 'password' => Hash::make('secret')],
+                [ 'email' => 'chris@scotch.io',  'created_at' => new DateTime, 'password' => Hash::make('secret')],
+                ['email' => 'holly@scotch.io',  'created_at' => new DateTime, 'password' => Hash::make('secret')],
+                ['email' => 'adnan@scotch.io',  'created_at' => new DateTime, 'password' => Hash::make('secret')],
         );
             
  
