@@ -98,7 +98,6 @@ Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
         return Response::json(['status' => 200, 'tasks' => $tasks]);
     });
     
-<<<<<<< HEAD
     Route::post('/project/{id}/task/{taskid}', function($id, $taskid){
         $user = JWTAuth::parseToken()->authenticate();
         $project = Project::where('user_id', $user->id)->where('id',$id)->first();
@@ -121,14 +120,6 @@ Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
             return Response::json(['status' => 200, 'Deleted']);
         } else {
             return Response::json('Unauthorized', 403);
-        }
-        
-=======
-      Route::delete('/project/{id}/', function($id){
-        $project = Project::find($id);
-        $project -> delete();
-        
-        return Response::json(['status' => 200, 'project deleted']);
->>>>>>> 42691e59c7e463816a8505c437483be92646dde7
+        }        
     });
  });
