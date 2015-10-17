@@ -1,17 +1,25 @@
 <ion-view view-title="Login">
     <ion-content class="padding">
-            <div class="alert alert-danger" ng-if="loginError" role="alert">{{loginErrorText}}</div>
-                <h3>Login</h3>
-                <form>
-                    <div class="form-group">
-                        <input type="email" class="form-control" placeholder="Email" ng-model="formData.email">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password" ng-model="formData.password">
-                    </div>
-                    <button class="btn btn-primary" ng-click="login()">Submit</button>
-                </form>
-                <br/>
-                <a ui-sref="register">Register</a>
+      <div class="alert alert-danger" ng-if="loginError" role="alert">{{loginErrorText}}</div>
+      <h3>Login</h3>
+      <form ng-submit="login();">
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Email</span>
+            <input type="email" class="form-control" placeholder="Email" ng-model="formData.email">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Password</span>
+            <input type="password" class="form-control" placeholder="Password" ng-model="formData.password">
+          </label>
+        </div>
+        <div class="padding">
+          <input type="submit" value="Login" class="button button-block button-positive activated" />
+        </div>
+      </form>
+
+      <div class="padding">
+        <a ui-sref="register">Register</a>
+      </div>
     </ion-content>
 </ion-view>
