@@ -27,6 +27,7 @@ Route::group(['prefix' => 'api', 'after' => 'allowOrigin'], function() {
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
     Route::post('authenticate', 'AuthenticateController@authenticate');
     Route::get('authenticate/user', 'AuthenticateController@getAuthenticatedUser');
+    Route::post('register', 'AuthenticateController@register');
 });
 
  Route::group(['prefix' => 'api', 'after' => 'allowOrigin', 'middleware' => 'jwt.auth'], function() {
