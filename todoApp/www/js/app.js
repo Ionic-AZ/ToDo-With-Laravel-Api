@@ -1,3 +1,5 @@
+//"proxyUrl": "http://laraveltodo.herokuapp.com/api"
+//"proxyUrl": "http://localhost:8000/api"
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
