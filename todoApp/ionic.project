@@ -4,7 +4,7 @@
    "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "http://localhost:8000/api"
+      "proxyUrl": "http://laraveltodo.herokuapp.com/api"
     }
   ]
 }
