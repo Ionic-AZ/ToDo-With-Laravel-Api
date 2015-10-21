@@ -6,7 +6,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 angular.module('todoApp', ['ionic', 'satellizer'])
-  .constant('ApiEndpoint', { url: 'http://localhost:8100/api' })
+  .constant('ApiEndpoint', { url: 'http://laraveltodo.herokuapp.com/api' })
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

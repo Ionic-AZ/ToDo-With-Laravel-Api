@@ -1,7 +1,7 @@
 {
   "name": "todoApp",
-  "app_id": "",
-   "proxies": [
+  "app_id": "e22ece54",
+  "proxies": [
     {
       "path": "/api",
       "proxyUrl": "http://laraveltodo.herokuapp.com/api"
