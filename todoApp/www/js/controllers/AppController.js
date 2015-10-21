@@ -3,9 +3,17 @@ angular
 	.controller('AppController', AppController);
 
 AppController.$inject = ['$scope', '$ionicModal', '$ionicSideMenuDelegate', 'Projects', '$auth', '$rootScope',
-	'$state'];
-function AppController($scope, $ionicModal, $ionicSideMenuDelegate, Projects, $auth, $rootScope, $state) {
+	'$state', 'Auth_Events'];
+function AppController($scope, $ionicModal, $ionicSideMenuDelegate, Projects, $auth, $rootScope, $state, Auth_Events) {
 	// Load or initialize projects
+	$scope.$on(Auth_Events.notAuthorized, function(event){
+		$state.go('login');
+	});
+	
+	$scope.$on(Auth_Events.notAuthenticated, function(event){
+		$scope.logout();
+	});
+	
 	Projects.all().then(function (data) {
 		$scope.projects = data;
 	})

@@ -7,6 +7,10 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('todoApp', ['ionic', 'satellizer'])
   .constant('ApiEndpoint', { url: 'http://laraveltodo.herokuapp.com/api' })
+  .constant('Auth_Events', {
+    notAuthenticated: 'auth-not-authenticated',
+    notAuthorized: 'auth-not-authorized'
+  })
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -24,17 +28,20 @@ angular.module('todoApp', ['ionic', 'satellizer'])
     var baseUrl = ApiEndpoint.url;
 
     $authProvider.loginUrl = baseUrl + '/authenticate';
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise(function ($injector, $location) {
+      var $state = $injector.get("$state");
+      $state.go("login");
+    });
 
     $stateProvider
       .state('login', {
         url: '/login',
-        templateUrl: '/templates/login.html',
+        templateUrl: 'templates/login.html',
         controller: 'AuthController'
       })
       .state('register', {
         url: '/register',
-        templateUrl: '/templates/register.html',
+        templateUrl: 'templates/register.html',
         controller: 'AuthController'
       })
       .state('app', {
@@ -60,30 +67,24 @@ angular.module('todoApp', ['ionic', 'satellizer'])
           }
         }
       });
-      
-    function redirectWhenLoggedOut($q, $injector) {
-            console.log('redrectWhenLoggedOut');  
-          return {
-                responseError: function (rejection) {
-                  console.log('redrectWhenLoggedOut.responseError', rejection);  
-                      var $state = $injector.get('$state');
-                    var rejectionReasons = ['token_not_provided', 'token_expired', 'token_absent', 'token_invalid'];
- 
-                    angular.forEach(rejectionReasons, function (value, key) {
-                        if (rejection.data.error === value) {
-                            localStorage.removeItem('user');
-                            $state.go('login');
-                        }
-                    });
- 
-                    return $q.reject(rejection);
-                }
-            }
-        }
- 
-        // $provide.factory('redirectWhenLoggedOut', redirectWhenLoggedOut);
+  })
+  .factory('AuthInterceptor', function ($q, $rootScope, Auth_Events) {
+    return {
 
-      // Push the new factory onto the $http interceptor array
-			$httpProvider.interceptors.push(redirectWhenLoggedOut);
+      responseError: function (rejection) {
+        console.log('AuthInterceptor', rejection);
+        console.log('redrectWhenLoggedOut.responseError', rejection);
+        $rootScope.$broadcast({
+          401: Auth_Events.notAuthenticated,
+          403: Auth_Events.notAuthorized,
+          400: Auth_Events.notAuthorized
+        }[rejection.status], rejection);
 
-  });
+        return $q.reject(rejection);
+      }
+    }
+  })
+  .config(function ($httpProvider) {
+    $httpProvider.interceptors.push('AuthInterceptor');
+  })
+;
